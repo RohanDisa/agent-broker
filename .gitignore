@@ -1,0 +1,12 @@
+/bin/
+/dist/
+/data/
+*.db
+*.db-wal
+*.db-shm
+coverage.out
+coverage.html
+*.exe
+.DS_Store
+.env
+signing.key

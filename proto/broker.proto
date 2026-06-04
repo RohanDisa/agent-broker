@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+package broker.v1;
+
+option go_package = "capability-broker/proto/brokerv1";
+
+// Broker is the authority-and-enforcement layer. Every tool call the agent
+// wants to make goes through these RPCs. The HTTP gateway implements the
+// same contract at /v1/* for demos and curl.
+service Broker {
+  rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
+  rpc RequestGrant(RequestGrantRequest) returns (RequestGrantResponse);
+  rpc CallTool(CallToolRequest) returns (CallToolResponse);
+  rpc Elevate(ElevateRequest) returns (ElevateResponse);
+  rpc ApproveElevation(ApproveElevationRequest) returns (ApproveElevationResponse);
+  rpc DenyElevation(DenyElevationRequest) returns (DenyElevationResponse);
+  rpc Revoke(RevokeRequest) returns (RevokeResponse);
+  rpc VerifyAudit(VerifyAuditRequest) returns (VerifyAuditResponse);
+}
+
+message Provenance {
+  string source = 1; // user | tool | web | doc
+  string origin = 2;
+  repeated string taint_chain = 3;
+}
+
+message Grant {
+  string id = 1;
+  string tool = 2;
+  string operation = 3;
+  string resource_pattern = 4;
+  map<string, string> constraints = 5;
+  string issued_for_task = 6;
+}
+
+message CreateTaskRequest {
+  string name = 1;
+  repeated Grant grants = 2;
+}
+
+message CreateTaskResponse {
+  string task_id = 1;
+  repeated Grant grants = 2;
+}
+
+message RequestGrantRequest {
+  string task_id = 1;
+  Grant grant = 2;
+}
+
+message RequestGrantResponse {
+  Grant grant = 1;
+}
+
+message CallToolRequest {
+  string task_id = 1;
+  string tool = 2;
+  string operation = 3;
+  string resource = 4;
+  map<string, string> arguments = 5;
+  Provenance provenance = 6;
+  string credential = 7; // present an existing token (replay / verify path)
+  string elevation_id = 8;
+}
+
+message Decision {
+  string action = 1;  // allow | deny | require_elevation
+  string reason = 2;
+  string control = 3;
+  string grant_id = 4;
+}
+
+message CallToolResponse {
+  Decision decision = 1;
+  string credential = 2;
+  string output = 3;
+  string elevation_id = 4;
+}
+
+message ElevateRequest {
+  string task_id = 1;
+  string tool = 2;
+  string operation = 3;
+  string resource = 4;
+}
+
+message ElevateResponse {
+  string elevation_id = 1;
+  string status = 2;
+}
+
+message ApproveElevationRequest { string id = 1; }
+message ApproveElevationResponse { string status = 1; }
+message DenyElevationRequest { string id = 1; }
+message DenyElevationResponse { string status = 1; }
+
+message RevokeRequest { string grant_id = 1; }
+message RevokeResponse { string revoked = 1; }
+
+message VerifyAuditRequest {}
+message VerifyAuditResponse {
+  bool ok = 1;
+  string error = 2;
+  int32 entries = 3;
+}
