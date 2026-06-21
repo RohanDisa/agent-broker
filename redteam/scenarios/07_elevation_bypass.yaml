@@ -1,0 +1,46 @@
+name: elevation_bypass
+kind: attack
+description: High-risk charge without approval, then with a reused old approval.
+setup:
+  grants:
+    - tool: payments
+      operation: charge
+      resource_pattern: "payments://acct/1"
+steps:
+  - action: call
+    tool: payments
+    operation: charge
+    resource: "payments://acct/1"
+    arguments:
+      amount: "50"
+    provenance:
+      source: user
+    expect:
+      action: require_elevation
+      control: elevation
+  - action: approve
+  - action: call
+    tool: payments
+    operation: charge
+    resource: "payments://acct/1"
+    arguments:
+      amount: "50"
+    elevation_id: last
+    expect:
+      action: allow
+  - action: call
+    tool: payments
+    operation: charge
+    resource: "payments://acct/1"
+    arguments:
+      amount: "50"
+    elevation_id: last
+    expect:
+      action: deny
+      control: elevation
+expect:
+  action: deny
+  control: elevation
+ablation:
+  disable: [elevation]
+  expect_action: allow

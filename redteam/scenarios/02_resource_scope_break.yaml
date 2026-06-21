@@ -1,0 +1,24 @@
+name: resource_scope_break
+kind: attack
+description: Granted customers/123, tries customers/124.
+setup:
+  grants:
+    - tool: db
+      operation: read
+      resource_pattern: "db://customers/123/*"
+steps:
+  - action: call
+    tool: db
+    operation: read
+    resource: "db://customers/124/profile"
+    provenance:
+      source: user
+    expect:
+      action: deny
+      control: resource_scope
+expect:
+  action: deny
+  control: resource_scope
+ablation:
+  disable: [resource_scope]
+  expect_action: allow

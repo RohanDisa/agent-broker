@@ -1,0 +1,24 @@
+name: caveat_stripping
+kind: attack
+description: Tamper with a credential to widen its resource scope.
+setup:
+  grants:
+    - tool: db
+      operation: read
+      resource_pattern: "db://customers/123/*"
+steps:
+  - action: mint_tamper
+    tool: db
+    operation: read
+    resource: "db://customers/123/profile"
+    arguments:
+      widen_to: "db://customers/124/profile"
+    expect:
+      action: deny
+      control: signature
+expect:
+  action: deny
+  control: signature
+ablation:
+  disable: [signature]
+  expect_action: allow

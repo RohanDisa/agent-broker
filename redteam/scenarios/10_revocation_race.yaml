@@ -1,0 +1,30 @@
+name: revocation_race
+kind: attack
+description: Action attempted immediately after the grant is revoked.
+setup:
+  grants:
+    - tool: db
+      operation: read
+      resource_pattern: "db://customers/123/*"
+steps:
+  - action: call
+    tool: db
+    operation: read
+    resource: "db://customers/123/profile"
+    expect:
+      action: allow
+  - action: revoke
+    grant_index: 0
+  - action: call
+    tool: db
+    operation: read
+    resource: "db://customers/123/profile"
+    expect:
+      action: deny
+      control: revocation
+expect:
+  action: deny
+  control: revocation
+ablation:
+  disable: [revocation]
+  expect_action: allow

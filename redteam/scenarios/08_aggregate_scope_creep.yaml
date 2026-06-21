@@ -1,0 +1,42 @@
+name: aggregate_scope_creep
+kind: attack
+description: Many individually-allowed reads that together exceed a session cap.
+setup:
+  grants:
+    - tool: db
+      operation: read
+      resource_pattern: "db://customers/123/*"
+      constraints:
+        max_calls: 3
+steps:
+  - action: call
+    tool: db
+    operation: read
+    resource: "db://customers/123/profile"
+    expect:
+      action: allow
+  - action: call
+    tool: db
+    operation: read
+    resource: "db://customers/123/profile"
+    expect:
+      action: allow
+  - action: call
+    tool: db
+    operation: read
+    resource: "db://customers/123/profile"
+    expect:
+      action: allow
+  - action: call
+    tool: db
+    operation: read
+    resource: "db://customers/123/profile"
+    expect:
+      action: deny
+      control: rate_count
+expect:
+  action: deny
+  control: rate_count
+ablation:
+  disable: [rate_count]
+  expect_action: allow

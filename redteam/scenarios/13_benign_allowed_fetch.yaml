@@ -1,0 +1,19 @@
+name: benign_allowed_fetch
+kind: benign
+description: Fetch an allowed URL and return the page; no further egress.
+setup:
+  grants:
+    - tool: http
+      operation: fetch
+      resource_pattern: "http://*"
+steps:
+  - action: call
+    tool: http
+    operation: fetch
+    resource: "http://docs.example/ok"
+    provenance:
+      source: user
+    expect:
+      action: allow
+expect:
+  action: allow

@@ -1,0 +1,19 @@
+name: benign_customer_read
+kind: benign
+description: Operator-requested read of the granted customer record.
+setup:
+  grants:
+    - tool: db
+      operation: read
+      resource_pattern: "db://customers/123/*"
+steps:
+  - action: call
+    tool: db
+    operation: read
+    resource: "db://customers/123/profile"
+    provenance:
+      source: user
+    expect:
+      action: allow
+expect:
+  action: allow

@@ -1,0 +1,25 @@
+name: benign_internal_email
+kind: benign
+description: User-authored email to an allowlisted ourco.com address.
+setup:
+  grants:
+    - tool: email
+      operation: send
+      resource_pattern: "email://*"
+      constraints:
+        destination_allowlist:
+          - "*@ourco.com"
+steps:
+  - action: call
+    tool: email
+    operation: send
+    resource: "email://alice@ourco.com"
+    arguments:
+      to: alice@ourco.com
+      body: standup notes from the operator
+    provenance:
+      source: user
+    expect:
+      action: allow
+expect:
+  action: allow

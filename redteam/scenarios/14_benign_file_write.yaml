@@ -1,0 +1,21 @@
+name: benign_file_write
+kind: benign
+description: Write operator-authored notes to a granted file path.
+setup:
+  grants:
+    - tool: files
+      operation: write
+      resource_pattern: "files://scratch/*"
+steps:
+  - action: call
+    tool: files
+    operation: write
+    resource: "files://scratch/notes"
+    arguments:
+      body: meeting notes from the operator
+    provenance:
+      source: user
+    expect:
+      action: allow
+expect:
+  action: allow

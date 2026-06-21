@@ -1,0 +1,32 @@
+name: benign_payment_with_approval
+kind: benign
+description: Payment charge proceeds after a fresh just-in-time approval.
+setup:
+  grants:
+    - tool: payments
+      operation: charge
+      resource_pattern: "payments://acct/1"
+steps:
+  - action: call
+    tool: payments
+    operation: charge
+    resource: "payments://acct/1"
+    arguments:
+      amount: "10"
+    provenance:
+      source: user
+    expect:
+      action: require_elevation
+      control: elevation
+  - action: approve
+  - action: call
+    tool: payments
+    operation: charge
+    resource: "payments://acct/1"
+    arguments:
+      amount: "10"
+    elevation_id: last
+    expect:
+      action: allow
+expect:
+  action: allow
