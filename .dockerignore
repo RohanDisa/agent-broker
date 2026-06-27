@@ -1,0 +1,9 @@
+.git
+.gitignore
+coverage.out
+coverage.html
+cov.out
+*.exe
+data
+bin
+dist

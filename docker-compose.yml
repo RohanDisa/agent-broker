@@ -1,0 +1,31 @@
+services:
+  broker:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      BROKER_ADDR: ":8080"
+      DB_PATH: /data/broker.db
+      SIGNING_KEY_PATH: /data/signing.key
+    volumes:
+      - broker-data:/data
+
+  demo-agent:
+    build: .
+    command: ["/app/demo-agent"]
+    environment:
+      BROKER_URL: http://broker:8080
+      INJECT_URL: http://evil.example/inject
+    depends_on:
+      - broker
+    profiles: ["demo"]
+
+  attacker:
+    build: .
+    command: ["/app/attacker"]
+    depends_on:
+      - broker
+    profiles: ["attack"]
+
+volumes:
+  broker-data:

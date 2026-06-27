@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: unit + integration + red-team
+        run: go test ./... -count=1
+      - name: coverage
+        run: |
+          go test ./... -coverprofile=coverage.out -covermode=atomic
+          go tool cover -func coverage.out | tail -n 1
+      - name: red-team gate (explicit)
+        run: go run ./cmd/attacker
+      - name: coverage floor on non-crypto packages
+        run: |
+          go test ./internal/... ./redteam/... -coverprofile=cov.out -covermode=atomic
+          pct=$(go tool cover -func cov.out | awk '/^total:/{print $3}' | tr -d '%')
+          echo "internal+redteam coverage: ${pct}%"
+          awk -v p="$pct" 'BEGIN{exit !(p+0 >= 70)}'
