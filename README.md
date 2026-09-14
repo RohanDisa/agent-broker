@@ -271,13 +271,3 @@ The core security packages (audit, capability, policy, injection, elevation) sit
 
 The red-team suite gating the build is itself a talking point: security
 controls are tested like any other regression.
-
-## Believability notes (what an interviewer will probe)
-
-- We stop **impact**, not injection. Overclaiming here is the fastest way to
-  lose credibility.
-- Do not claim exactly-once or unbreakable. Claim defense-in-depth with a
-  measured block rate and an honest false-positive rate.
-- The broker is a trusted component on purpose.
-- Every control has an attack that succeeds in its absence. That A/B is the
-  proof the control does anything.
