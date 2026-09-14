@@ -75,16 +75,6 @@ everything scores 100% on attacks and fails the point.
 5. **Data exfiltration** — sensitive data to an unapproved destination
 6. **Scope creep over a session** — many plausible calls that aggregate into an attack
 
-### Explicitly out of scope
-
-- Breaking the model’s own reasoning (we assume it can be fooled; that is the premise)
-- Byzantine broker compromise
-- Side-channel and timing attacks on the crypto
-- Network-level MITM (assume TLS between components)
-- Supply-chain attacks on the tools themselves
-
-Listing the non-goals is what makes the in-scope claims credible.
-
 ## How it works
 
 ```
