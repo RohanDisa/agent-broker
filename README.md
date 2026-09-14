@@ -223,7 +223,7 @@ no model).
 |---|---|
 | Attack block rate | 10/10 (CI fails if this drops) |
 | Benign allow rate | 8/8 |
-| False-positive rate | 0/8 (benign set is teaching-grade; say so) |
+| False-positive rate | 0/8 (benign set is teaching-grade) |
 | Ablation proofs | 10/10 attacks succeed with the defending control off |
 | Credential TTL / damage window | 5s |
 | Audit tamper | detected; broken link named by seq |
