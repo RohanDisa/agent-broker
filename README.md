@@ -258,6 +258,3 @@ The core security packages (audit, capability, policy, injection, elevation) sit
   approve and deny paths; revocation on the next call
 - **Red-team:** all ten attacks + eight benign scenarios; ablation A/B; CI
   gate on block rate
-
-The red-team suite gating the build is itself a talking point: security
-controls are tested like any other regression.
